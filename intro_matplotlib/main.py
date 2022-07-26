@@ -81,6 +81,8 @@ reshaped_df
 
 reshaped_df.isna().values.any()
 
+
+
 """## Data Visualisaton with with Matplotlib
 
 **Challenge**: Use the [matplotlib documentation](https://matplotlib.org/3.2.1/api/_as_gen/matplotlib.pyplot.plot.html#matplotlib.pyplot.plot) to plot a single programming language (e.g., java) on a chart.
@@ -100,11 +102,6 @@ for c in reshaped_df.columns:
     plt.plot(reshaped_df.index, reshaped_df[c], label=reshaped_df[c].name, linewidth=3)
 
 plt.legend(fontsize=14)
-
-
-
-"""**Challenge**: Show two line (e.g. for Java and Python) on the same chart."""
-
 
 
 """# Smoothing out Time Series Data
