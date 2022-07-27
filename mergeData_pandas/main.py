@@ -149,22 +149,3 @@ The themes.csv file has the actual theme names. The sets .csv has <code>theme_id
 
 **Challenge**: Explore the themes.csv. How is it structured? Search for the name 'Star Wars'. How many <code>id</code>s correspond to this name in the themes.csv? Now use these <code>id</code>s and find the corresponding the sets in the sets.csv (Hint: you'll need to look for matches in the <code>theme_id</code> column)
 """
-
-
-
-
-
-
-
-
-
-
-
-"""### Merging (i.e., Combining) DataFrames based on a Key
-
-"""
-
-
-
-
-
