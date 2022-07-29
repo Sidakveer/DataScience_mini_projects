@@ -133,3 +133,70 @@ ax1.set_ylabel("No. of set", color="g")
 ax2.set_ylabel("No. themes", color="b")
 
 
+
+"""**Challenge**: Use the <code>.groupby()</code> and <code>.agg()</code> function together to figure out the average number of parts per set. How many parts did the average LEGO set released in 1954 compared to say, 2017?"""
+
+parts_per_head = df.groupby("year").agg({"num_parts": pd.Series.mean})
+parts_per_head.head()
+
+
+
+"""### Scatter Plots in Matplotlib
+
+**Challenge**: Has the size and complexity of LEGO sets increased over time based on the number of parts? Plot the average number of parts over time using a Matplotlib scatter plot. See if you can use the [scatter plot documentation](https://matplotlib.org/3.1.0/api/_as_gen/matplotlib.pyplot.scatter.html) before I show you the solution. Do you spot a trend in the chart?
+"""
+
+plt.scatter(parts_per_head.index[:-2], parts_per_head.num_parts[:-2])
+
+"""### Number of Sets per LEGO Theme
+
+LEGO has licensed many hit franchises from Harry Potter to Marvel Super Heros to many others. But which theme has the largest number of individual sets?
+"""
+
+df.head()
+
+sets_theme_count = df.theme_id.value_counts()
+sets_theme_count[:5]
+
+"""<img src="https://i.imgur.com/Sg4lcjx.png">
+
+### Database Schemas, Foreign Keys and Merging DataFrames
+
+The themes.csv file has the actual theme names. The sets .csv has <code>theme_ids</code> which link to the <code>id</code> column in the themes.csv.
+
+**Challenge**: Explore the themes.csv. How is it structured? Search for the name 'Star Wars'. How many <code>id</code>s correspond to this name in the themes.csv? Now use these <code>id</code>s and find the corresponding the sets in the sets.csv (Hint: you'll need to look for matches in the <code>theme_id</code> column)
+"""
+
+themes_df = pd.read_csv("data/themes.csv")
+themes_df[themes_df.name == "Star Wars"]
+
+df[df.theme_id == 209]
+
+
+
+
+
+sets_theme_count = df.theme_id.value_counts()
+sets_theme_count[:5]
+sets_theme_count = pd.DataFrame({
+    "id": sets_theme_count.index,
+    "set_count": sets_theme_count.values
+})
+sets_theme_count.head()
+
+"""### Merging (i.e., Combining) DataFrames based on a Key
+
+"""
+
+merged_df = pd.merge(sets_theme_count, themes_df, on="id")
+merged_df.head()
+
+plt.bar(merged_df.name[:10], merged_df.set_count[:10])
+
+plt.figure(figsize=(14, 8))
+plt.xticks(fontsize=14, rotation=45)
+plt.yticks(fontsize=14)
+plt.xlabel("Theme Name", fontsize=14, color="g")
+plt.ylabel("No. of Sets", fontsize=14, color="g")
+
+plt.bar(merged_df.name[:10], merged_df.set_count[:10])
