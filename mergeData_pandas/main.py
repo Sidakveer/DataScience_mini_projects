@@ -75,4 +75,61 @@ df.head()
 
 
 
+"""**Challenge**: In which year were the first LEGO sets released and what were these sets called?"""
+
+df[df.year == 1949]
+
+"""**Challenge**: How many different sets did LEGO sell in their first year? How many types of LEGO products were on offer in the year the company started?"""
+
+df[df.year == 1949]
+
+"""**Challenge**: Find the top 5 LEGO sets with the most number of parts. """
+
+df.sort_values("num_parts", ascending=False).head()
+
+"""**Challenge**: Use <code>.groupby()</code> and <code>.count()</code> to show the number of LEGO sets released year-on-year. How do the number of sets released in 1955 compare to the number of sets released in 2019? """
+
+sets_by_year = df.groupby("year").count()
+sets_by_year["set_num"].head()
+
+sets_by_year["set_num"].tail()
+
+"""**Challenge**: Show the number of LEGO releases on a line chart using Matplotlib. <br>
+<br>
+Note that the .csv file is from late 2020, so to plot the full calendar years, you will have to exclude some data from your chart. Can you use the slicing techniques covered in Day 21 to avoid plotting the last two years? The same syntax will work on Pandas DataFrames. 
+"""
+
+plot = plt.plot(sets_by_year.index[:-2], sets_by_year.set_num[:-2])
+
+
+
+"""### Aggregate Data with the Python .agg() Function
+
+Let's work out the number of different themes shipped by year. This means we have to count the number of unique theme_ids per calendar year.
+"""
+
+theme_by_year = df.groupby("year").agg({"theme_id": pd.Series.nunique})
+
+
+theme_by_year.rename(columns={"theme_id": "nr_themes"}, inplace=True)
+theme_by_year.head()
+# df.head()
+
+
+
+"""**Challenge**: Plot the number of themes released by year on a line chart. Only include the full calendar years (i.e., exclude 2020 and 2021). """
+
+plt.plot(theme_by_year.index[:-2], theme_by_year.nr_themes[:-2])
+plt.plot(sets_by_year.index[:-2], sets_by_year.set_num[:-2])
+
+"""### Line Charts with Two Seperate Axes"""
+
+ax1 = plt.gca()
+ax2 = plt.twinx()
+ax1.plot(sets_by_year.index[:-2], sets_by_year.set_num[:-2], color="g")
+ax2.plot(theme_by_year.index[:-2], theme_by_year.nr_themes[:-2], color="b")
+ax1.set_xlabel("Year")
+ax1.set_ylabel("No. of set", color="g")
+ax2.set_ylabel("No. themes", color="b")
+
 
