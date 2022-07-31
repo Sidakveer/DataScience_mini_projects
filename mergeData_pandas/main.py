@@ -44,9 +44,6 @@ theme_by_year.rename(columns={"theme_id": "nr_themes"}, inplace=True)
 theme_by_year.head()
 # df.head()
 
-
-
-
 plt.plot(theme_by_year.index[:-2], theme_by_year.nr_themes[:-2])
 plt.plot(sets_by_year.index[:-2], sets_by_year.set_num[:-2])
 
@@ -59,19 +56,8 @@ ax1.set_xlabel("Year")
 ax1.set_ylabel("No. of set", color="g")
 ax2.set_ylabel("No. themes", color="b")
 
-
-
-"""**Challenge**: Use the <code>.groupby()</code> and <code>.agg()</code> function together to figure out the average number of parts per set. How many parts did the average LEGO set released in 1954 compared to say, 2017?"""
-
 parts_per_head = df.groupby("year").agg({"num_parts": pd.Series.mean})
 parts_per_head.head()
-
-
-
-"""### Scatter Plots in Matplotlib
-
-**Challenge**: Has the size and complexity of LEGO sets increased over time based on the number of parts? Plot the average number of parts over time using a Matplotlib scatter plot. See if you can use the [scatter plot documentation](https://matplotlib.org/3.1.0/api/_as_gen/matplotlib.pyplot.scatter.html) before I show you the solution. Do you spot a trend in the chart?
-"""
 
 plt.scatter(parts_per_head.index[:-2], parts_per_head.num_parts[:-2])
 
