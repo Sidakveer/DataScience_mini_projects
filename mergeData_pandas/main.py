@@ -85,12 +85,10 @@ df.head()
 sets_theme_count = df.theme_id.value_counts()
 sets_theme_count[:5]
 
-
 themes_df = pd.read_csv("data/themes.csv")
 themes_df[themes_df.name == "Star Wars"]
 
 df[df.theme_id == 209]
-
 
 sets_theme_count = df.theme_id.value_counts()
 sets_theme_count[:5]
@@ -99,7 +97,6 @@ sets_theme_count = pd.DataFrame({
     "set_count": sets_theme_count.values
 })
 sets_theme_count.head()
-
 
 merged_df = pd.merge(sets_theme_count, themes_df, on="id")
 merged_df.head()
