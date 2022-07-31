@@ -1,49 +1,24 @@
 import pandas as pd
 
-"""## Data Exploration
-
-**Challenge**: Read the .csv file and store it in a Pandas dataframe
-"""
 
 df = pd.read_csv("QueryResults.csv", names=['DATE', 'TAG', 'POSTS'], header=0)
 df
 
-"""**Challenge**: Examine the first 5 rows and the last 5 rows of the of the dataframe"""
 
 df.head()
 df.tail()
 
-"""**Challenge:** Check how many rows and how many columns there are. 
-What are the dimensions of the dataframe?
-"""
+
 
 df.shape
 df.count()
 
 df.count()
 
-"""**Challenge**: Count the number of entries in each column of the dataframe"""
-
-
-
-"""**Challenge**: Calculate the total number of post per language.
-Which Programming language has had the highest total number of posts of all time?
-"""
-
 df.groupby("TAG").sum()
 
-"""Some languages are older (e.g., C) and other languages are newer (e.g., Swift). The dataset starts in September 2008.
-
-**Challenge**: How many months of data exist per language? Which language had the fewest months with an entry? 
-
-"""
 
 df.groupby("TAG").count()
-
-"""## Data Cleaning
-
-Let's fix the date format to make it more readable. We need to use Pandas to change format from a string of "2008-07-01 00:00:00" to a datetime object with the format of "2008-07-01"
-"""
 
 df["DATE"][1]
 
@@ -89,12 +64,6 @@ for c in reshaped_df.columns:
     plt.plot(reshaped_df.index, reshaped_df[c], label=reshaped_df[c].name, linewidth=3)
 
 plt.legend(fontsize=14)
-
-
-"""# Smoothing out Time Series Data
-
-Time series data can be quite noisy, with a lot of up and down spikes. To better see a trend we can plot an average of, say 6 or 12 observations. This is called the rolling mean. We calculate the average in a window of time and move it forward by one overservation. Pandas has two handy methods already built in to work this out: [rolling()](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.rolling.html) and [mean()](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.core.window.rolling.Rolling.mean.html). 
-"""
 
 roll_df = reshaped_df.rolling(window=12).mean()
 
