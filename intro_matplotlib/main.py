@@ -56,23 +56,16 @@ type(pd.to_datetime(df.DATE[1]))
 df.DATE = pd.to_datetime(df.DATE)
 df.head
 
-"""## Data Manipulation
 
-
-"""
 
 reshaped_df = df.pivot(index="DATE", columns="TAG", values="POSTS")
 reshaped_df
-
-"""**Challenge**: What are the dimensions of our new dataframe? How many rows and columns does it have? Print out the column names and print out the first 5 rows of the dataframe."""
 
 reshaped_df.shape
 
 reshaped_df.columns
 
 reshaped_df.head()
-
-"""**Challenge**: Count the number of entries per programming language. Why might the number of entries be different? """
 
 reshaped_df.count()
 
@@ -81,12 +74,6 @@ reshaped_df
 
 reshaped_df.isna().values.any()
 
-
-
-"""## Data Visualisaton with with Matplotlib
-
-**Challenge**: Use the [matplotlib documentation](https://matplotlib.org/3.2.1/api/_as_gen/matplotlib.pyplot.plot.html#matplotlib.pyplot.plot) to plot a single programming language (e.g., java) on a chart.
-"""
 
 import matplotlib.pyplot as plt
 
