@@ -236,3 +236,46 @@ ax2.plot(df_btc_monthly.index, df_btc_search.BTC_NEWS_SEARCH,
 plt.show()
 
 df_btc_monthly
+
+"""### Unemployement Benefits Search vs. Actual Unemployment in the U.S.
+
+**Challenge** Plot the search for "unemployment benefits" against the unemployment rate. 
+1. Change the title to: Monthly Search of "Unemployment Benefits" in the U.S. vs the U/E Rate <br>
+2. Change the y-axis label to: FRED U/E Rate <br>
+3. Change the axis limits <br>
+4. Add a grey [grid](https://matplotlib.org/3.2.1/api/_as_gen/matplotlib.pyplot.grid.html) to the chart to better see the years and the U/E rate values. Use dashes for the line style<br> 
+5. Can you discern any seasonality in the searches? Is there a pattern?
+"""
+
+plt.figure(figsize=(10,6), dpi=120)
+ 
+plt.title('Monthly Search of "Unemployment Benefits" in the U.S. vs the U/E Rate', fontsize=18)
+plt.yticks(fontsize=14)
+plt.xticks(fontsize=14, rotation=45)
+ 
+ax1 = plt.gca()
+ax2 = ax1.twinx()
+ 
+ax1.set_ylabel('FRED U/E Rate', color='purple', fontsize=14)
+ax2.set_ylabel('Search Trend', color='skyblue', fontsize=14)
+ 
+ax1.xaxis.set_major_locator(years)
+ax1.xaxis.set_major_formatter(years_fmt)
+ax1.xaxis.set_minor_locator(months)
+ 
+ax1.set_ylim(bottom=3, top=10.5)
+ax1.set_xlim([df_unemployment.MONTH.min(), df_unemployment.MONTH.max()])
+ 
+# Show the grid lines as dark grey lines
+ax1.grid(color='grey', linestyle='--')
+ 
+# Change the dataset used
+ax1.plot(df_unemployment.MONTH, df_unemployment.UNRATE, 
+         color='purple', linewidth=3, linestyle='--')
+ax2.plot(df_unemployment.MONTH, df_unemployment.UE_BENEFITS_WEB_SEARCH, 
+         color='skyblue', linewidth=3)
+plt.show()
+
+"""**Challenge**: Calculate the 3-month or 6-month rolling average for the web searches. Plot the 6-month rolling average search data against the actual unemployment. What do you see in the chart? Which line moves first?
+
+"""
