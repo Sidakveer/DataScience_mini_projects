@@ -100,8 +100,32 @@ df_btc_price[df_btc_price.CLOSE.isna()]
 df_btc_price.dropna(inplace=True)
 df_btc_price.head()
 
+"""### Convert Strings to DateTime Objects
 
+**Challenge**: Check the data type of the entries in the DataFrame MONTH or DATE columns. Convert any strings in to Datetime objects. Do this for all 4 DataFrames. Double check if your type conversion was successful.
+"""
 
+type(df_btc_price.DATE[0])
 
+type(df_btc_search.MONTH[0])
+type(df_unemployment.MONTH[0])
+type(df_tesla.MONTH[0])
 
+df_tesla.MONTH = pd.to_datetime(df_tesla.MONTH)
+df_btc_search.MONTH = pd.to_datetime(df_btc_search.MONTH)
+df_unemployment.MONTH = pd.to_datetime(df_unemployment.MONTH)
+df_btc_price.DATE = pd.to_datetime(df_btc_price.DATE)
+
+type(df_btc_price.DATE[0])
+type(df_btc_search.MONTH[0])
+type(df_unemployment.MONTH[0])
+type(df_tesla.MONTH[0])
+
+"""### Converting from Daily to Monthly Data
+
+[Pandas .resample() documentation](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.resample.html) <br>
+"""
+
+df_btc_monthly = df_btc_price.resample("M", on="DATE").last()
+df_tesla.head()
 
