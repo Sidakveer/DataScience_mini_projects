@@ -129,3 +129,110 @@ type(df_tesla.MONTH[0])
 df_btc_monthly = df_btc_price.resample("M", on="DATE").last()
 df_tesla.head()
 
+
+
+"""# Data Visualisation
+
+### Notebook Formatting & Style Helpers
+"""
+
+# Create locators for ticks on the time axis
+years = mdates.YearLocator()
+months = mdates.MonthLocator()
+years_fmt = mdates.DateFormatter("%Y")
+
+plt.figure(figsize=(12, 8),dpi=120)
+plt.title('Tesla Web Search vs Price', fontsize=18)
+plt.xlabel("DATE", fontsize=14)
+plt.xticks(fontsize=14, rotation=45)
+    
+
+
+
+ax1 = plt.gca()
+ax2 = ax1.twinx()
+
+ax1.xaxis.set_major_locator(years)
+ax1.xaxis.set_major_formatter(years_fmt)
+ax1.xaxis.set_minor_locator(months)
+ax1.set_xlim([df_tesla.MONTH.min(), df_tesla.MONTH.max()])
+ax1.set_ylim([0, 600])
+ax1.plot(df_tesla.MONTH, df_tesla.TSLA_USD_CLOSE, color="r", linewidth=3)
+ax2.plot(df_tesla.MONTH, df_tesla.TSLA_WEB_SEARCH, color="skyblue", linewidth=3)
+ax1.set_ylabel("TSLA Stock Price", color="r")
+ax2.set_ylabel("TSLA Search Vol", color="skyblue")
+
+plt.show()
+
+# Register date converters to avoid warning messages
+
+"""### Tesla Stock Price v.s. Search Volume
+
+**Challenge:** Plot the Tesla stock price against the Tesla search volume using a line chart and two different axes. Label one axis 'TSLA Stock Price' and the other 'Search Trend'.
+"""
+
+
+
+"""**Challenge**: Add colours to style the chart. This will help differentiate the two lines and the axis labels. Try using one of the blue [colour names](https://matplotlib.org/3.1.1/gallery/color/named_colors.html) for the search volume and a HEX code for a red colour for the stock price. 
+<br>
+<br>
+Hint: you can colour both the [axis labels](https://matplotlib.org/3.3.2/api/text_api.html#matplotlib.text.Text) and the [lines](https://matplotlib.org/3.2.1/api/_as_gen/matplotlib.lines.Line2D.html#matplotlib.lines.Line2D) on the chart using keyword arguments (kwargs).  
+"""
+
+
+
+"""**Challenge**: Make the chart larger and easier to read. 
+1. Increase the figure size (e.g., to 14 by 8). 
+2. Increase the font sizes for the labels and the ticks on the x-axis to 14. 
+3. Rotate the text on the x-axis by 45 degrees. 
+4. Make the lines on the chart thicker. 
+5. Add a title that reads 'Tesla Web Search vs Price'
+6. Keep the chart looking sharp by changing the dots-per-inch or [DPI value](https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.figure.html). 
+7. Set minimum and maximum values for the y and x axis. Hint: check out methods like [set_xlim()](https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.axes.Axes.set_xlim.html). 
+8. Finally use [plt.show()](https://matplotlib.org/3.2.1/api/_as_gen/matplotlib.pyplot.show.html) to display the chart below the cell instead of relying on the automatic notebook output.
+"""
+
+
+
+"""How to add tick formatting for dates on the x-axis. """
+
+
+
+"""### Bitcoin (BTC) Price v.s. Search Volume
+
+**Challenge**: Create the same chart for the Bitcoin Prices vs. Search volumes. <br>
+1. Modify the chart title to read 'Bitcoin News Search vs Resampled Price' <br>
+2. Change the y-axis label to 'BTC Price' <br>
+3. Change the y- and x-axis limits to improve the appearance <br>
+4. Investigate the [linestyles](https://matplotlib.org/3.2.1/api/_as_gen/matplotlib.pyplot.plot.html ) to make the BTC price a dashed line <br>
+5. Investigate the [marker types](https://matplotlib.org/3.2.1/api/markers_api.html) to make the search datapoints little circles <br>
+6. Were big increases in searches for Bitcoin accompanied by big increases in the price?
+"""
+
+plt.figure(figsize=(14,8), dpi=120)
+ 
+plt.title('Bitcoin News Search vs Resampled Price', fontsize=18)
+plt.xticks(fontsize=14, rotation=45)
+ 
+ax1 = plt.gca()
+ax2 = ax1.twinx()
+ 
+ax1.set_ylabel('BTC Price', color='#F08F2E', fontsize=14)
+ax2.set_ylabel('Search Trend', color='skyblue', fontsize=14)
+ 
+ax1.xaxis.set_major_locator(years)
+ax1.xaxis.set_major_formatter(years_fmt)
+ax1.xaxis.set_minor_locator(months)
+ 
+ax1.set_ylim(bottom=0, top=15000)
+ax1.set_xlim([df_btc_monthly.index.min(), df_btc_monthly.index.max()])
+ 
+# Experiment with the linestyle and markers
+ax1.plot(df_btc_monthly.index, df_btc_monthly.CLOSE, 
+         color='#F08F2E', linewidth=3, linestyle='--')
+ax2.plot(df_btc_monthly.index, df_btc_search.BTC_NEWS_SEARCH, 
+         color='skyblue', linewidth=3, marker='o')
+ 
+plt.show()
+
+df_btc_monthly
