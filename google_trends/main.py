@@ -307,6 +307,35 @@ ax2.plot(df_unemployment.MONTH, roll_df.UE_BENEFITS_WEB_SEARCH, 'skyblue', linew
  
 plt.show()
 
+"""### Including 2020 in Unemployment Charts
 
+**Challenge**: Read the data in the 'UE Benefits Search vs UE Rate 2004-20.csv' into a DataFrame. Convert the MONTH column to Pandas Datetime objects and then plot the chart. What do you see?
+"""
+
+df = pd.read_csv("UE Benefits Search vs UE Rate 2004-20.csv")
+print(type(df.MONTH[0]))
+df.head()
+df.MONTH = pd.to_datetime(df.MONTH)
+print(type(df.MONTH[0]))
+
+df.head()
+
+plt.figure(figsize=(14, 8), dpi=120)
+plt.title("UE Benefits Search vs UE Rate 2004-20")
+plt.xlabel("Year")
+plt.xticks(fontsize=14, rotation=45)
+plt.yticks(fontsize=14)
+
+plt.xlim([df.MONTH.min(), df.MONTH.max()])
+plt.ylim([0, 120])
+
+ax1 = plt.gca()
+ax2 = ax1.twinx()
+ax1.set_ylabel("UE Benefits Search", fontsize=14, color="green")
+ax2.set_ylabel("UE Rate", fontsize=14, color="orange")
+
+
+ax1.plot(df.MONTH, df.UE_BENEFITS_WEB_SEARCH, linewidth=2, color="green")
+ax2.plot(df.MONTH, df.UNRATE, linewidth=2, color="orange")
 
 
