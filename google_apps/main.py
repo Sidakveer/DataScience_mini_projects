@@ -159,11 +159,43 @@ df_apps_clean.Price.describe()
 df_apps_clean.Price = df_apps_clean.Price.astype(str).str.replace("$", "")
 df_apps_clean.Price = pd.to_numeric(df_apps_clean.Price)
 df_apps_clean[["App", "Price"]].groupby("Price").count().tail(20)
-df_apps_clean.sort_values("Price", ascending=False).head(20)
+df_apps_clean.sort_values("Price", ascending=False).head(2)
 
 """### The most expensive apps sub $250"""
 
+df_apps_clean.sort_values("Price", ascending=False).head(5)
+df_apps_clean = df_apps_clean[df_apps_clean.Price < 250]
+df_apps_clean.sort_values("Price", ascending=False)[:10]
+
+"""### Highest Grossing Paid Apps (ballpark estimate)"""
+
+df_apps_clean["Revenue Estimate"] = df_apps_clean.Price.mul(df_apps_clean.Installs)
+df_apps_clean.sort_values("Revenue Estimate", ascending=False)[:1]
+
+"""# Plotly Bar Charts & Scatter Plots: Analysing App Categories"""
+
+df_apps_clean.Category.nunique()
+top10 = df_apps_clean.Category.value_counts()[:10]
+top10
+
+bar = px.bar(x=top10.index, y=top10.values)
+bar.show()
+
+category_installs = df_apps_clean.groupby("Category").agg({"Installs": pd.Series.sum})
+category_installs.sort_values('Installs', ascending=True, inplace=True)
+# category_installs
+
+"""### Vertical Bar Chart - Highest Competition (Number of Apps)"""
 
 
 
+"""### Horizontal Bar Chart - Most Popular Categories (Highest Downloads)"""
+
+h_bar = px.bar(x=category_installs.Installs, y=category_installs.index
+               , orientation="h"
+               ,title="category Popularity")
+
+h_bar.update_layout(xaxis_title='Number of Downloads', yaxis_title='Category')
+
+h_bar.show()
 
