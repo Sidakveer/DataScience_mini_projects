@@ -216,13 +216,166 @@ h_bar.show()
 """
 
 df_scatter = df_apps_clean.groupby("Category").agg({"App": pd.Series.count, "Installs": pd.Series.sum})
-df_scatter.sort_values("Installs", ascending=False)
+# df_scatter.sort_values("Installs", ascending=False)
 
-s = px.scatter(df_scatter)
-s.show()
+scatter = px.scatter(df_scatter, # data
+                    x='App', # column name
+                    y='Installs',
+                    title='Category Concentration',
+                    size='App',
+                    hover_name=df_scatter.index,
+                    color='Installs'
+                     )
+scatter.update_layout(xaxis_title="Number of Apps (Lower=More Concentrated)",
+                      yaxis_title="Installs",
+                      yaxis=dict(type='log')
+                      )
+scatter.show()
 
 """# Extracting Nested Data from a Column
 
 **Challenge**: How many different types of genres are there? Can an app belong to more than one genre? Check what happens when you use .value_counts() on a column with nested values? See if you can work around this problem by using the .split() function and the DataFrame's [.stack() method](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.stack.html). 
 
 """
+
+df_apps_clean.Category.nunique()
+
+df_apps_clean.Genres.value_counts()
+
+stack = df_apps_clean.Genres.str.split(";", expand=True).stack()
+stack.shape
+type(stack)
+num_genres = stack.value_counts()
+num_genres
+
+"""# Colour Scales in Plotly Charts - Competition in Genres
+
+**Challenge**: Can you create this chart with the Series containing the genre data? 
+
+<img src=https://imgur.com/DbcoQli.png width=400>
+
+Try experimenting with the built in colour scales in Plotly. You can find a full list [here](https://plotly.com/python/builtin-colorscales/). 
+
+* Find a way to set the colour scale using the color_continuous_scale parameter. 
+* Find a way to make the color axis disappear by using coloraxis_showscale.
+"""
+
+bar = px.bar(x=num_genres.index[:15], 
+             y=num_genres.values[:15],
+             title="Top Genres",
+             color=num_genres.values[:15],
+             color_continuous_scale="Agsunset"
+             )
+bar.update_layout(xaxis_title="Genres",
+yaxis_title='Number of Apps',
+coloraxis_showscale=False)
+bar.show()
+
+"""# Grouped Bar Charts: Free vs. Paid Apps per Category"""
+
+df_apps_clean.Type.value_counts()
+
+df_fvp = df_apps_clean.groupby(["Category", "Type"], as_index=False).agg({"App": "count"})
+df_fvp.head()
+
+
+
+"""**Challenge**: Use the plotly express bar [chart examples](https://plotly.com/python/bar-charts/#bar-chart-with-sorted-or-ordered-categories) and the [.bar() API reference](https://plotly.com/python-api-reference/generated/plotly.express.bar.html#plotly.express.bar) to create this bar chart: 
+
+<img src=https://imgur.com/LE0XCxA.png>
+
+You'll want to use the `df_free_vs_paid` DataFrame that you created above that has the total number of free and paid apps per category. 
+
+See if you can figure out how to get the look above by changing the `categoryorder` to 'total descending' as outlined in the documentation here [here](https://plotly.com/python/categorical-axes/#automatically-sorting-categories-by-name-or-total-value). 
+"""
+
+bar = px.bar(df_fvp,
+             x="Category",
+             y="App",
+             title="Free vs Paid",
+             color="Type",
+             barmode="group"
+             )
+
+bar.update_layout(xaxis_title='Category',
+                    yaxis_title='Number of Apps',
+                    xaxis={'categoryorder':'total descending'},
+                    yaxis={"type":'log'}, 
+                    )
+bar.show()
+
+"""# Plotly Box Plots: Lost Downloads for Paid Apps
+
+**Challenge**: Create a box plot that shows the number of Installs for free versus paid apps. How does the median number of installations compare? Is the difference large or small?
+
+Use the [Box Plots Guide](https://plotly.com/python/box-plots/) and the [.box API reference](https://plotly.com/python-api-reference/generated/plotly.express.box.html) to create the following chart. 
+
+<img src=https://imgur.com/uVsECT3.png>
+
+"""
+
+box = px.box(df_apps_clean,
+             title="Installs",
+             x="Type",
+             y="Installs",
+             color="Type",
+             notched=True,
+             points="all"
+             )
+
+box.update_layout(
+    yaxis={"type":"log"}
+)
+box.show()
+
+"""# Plotly Box Plots: Revenue by App Category
+
+**Challenge**: See if you can generate the chart below: 
+
+<img src=https://imgur.com/v4CiNqX.png>
+
+Looking at the hover text, how much does the median app earn in the Tools category? If developing an Android app costs $30,000 or thereabouts, does the average photography app recoup its development costs?
+
+Hint: I've used 'min ascending' to sort the categories. 
+"""
+
+df = df_apps_clean[df_apps_clean.Type == "Paid"]
+df.shape
+
+box = px.box(df,
+             x="Category",
+             y="Revenue Estimate",
+             title='How Much Can Paid Apps Earn?'
+             )
+
+box.update_layout(
+    # xaxis={'categoryorder':'min ascending'},
+    yaxis={"type": "log"}
+    )
+
+box.show()
+
+"""# How Much Can You Charge? Examine Paid App Pricing Strategies by Category
+
+**Challenge**: What is the median price price for a paid app? Then compare pricing by category by creating another box plot. But this time examine the prices (instead of the revenue estimates) of the paid apps. I recommend using `{categoryorder':'max descending'}` to sort the categories.
+"""
+
+df = df_apps_clean[df_apps_clean.Type == "Paid"]
+df.shape
+
+box = px.box(df,
+             x="Category",
+             y="Price",
+             title='How Much Can Paid Apps Earn?'
+             )
+
+box.update_layout(
+    xaxis={'categoryorder':'max descending'},
+    yaxis={"type": "log"}
+    )
+
+box.show()
+df.Price.median()
+
+
+
