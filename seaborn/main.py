@@ -147,16 +147,133 @@ import seaborn as sns
 
 """
 
-plt.figure(figsize=(8,4), dpi=200)
+clean_data.info()
+
+plt.figure(figsize=(8,4), dpi=100)
  
-ax = sns.scatterplot(data=clean_data,
-                     x='USD_Production_Budget', 
-                     y='USD_Worldwide_Gross',
-                     hue="USD_Worldwide_Gross",
-                     size='USD_Worldwide_Gross'
-                     )
+with sns.axes_style("darkgrid"):
+    ax = sns.scatterplot(data=clean_data,
+                        x='Release_Date', 
+                        y='USD_Production_Budget',
+                        hue="USD_Worldwide_Gross",
+                        size='USD_Worldwide_Gross'
+                        )
  
-ax.set(ylim=(0, 3000000000),
-       xlim=(0, 450000000),
-       ylabel='Revenue in $ billions',
-       xlabel='Budget in $100 millions')
+    ax.set(
+        # ylim=(0, 3000000000),
+          xlim=(clean_data.Release_Date.min(), clean_data.Release_Date.max()),
+          xlabel='Year',
+          ylabel='Budget in $100 millions'
+          )
+
+"""# Converting Years to Decades Trick
+
+**Challenge**: Create a column in `data_clean` that has the decade of the release. 
+
+<img src=https://i.imgur.com/0VEfagw.png width=650> 
+
+Here's how: 
+1. Create a [`DatetimeIndex` object](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DatetimeIndex.html) from the Release_Date column. 
+2. Grab all the years from the `DatetimeIndex` object using the `.year` property.
+<img src=https://i.imgur.com/5m06Ach.png width=650>
+3. Use floor division `//` to convert the year data to the decades of the films.
+4. Add the decades as a `Decade` column to the `data_clean` DataFrame.
+"""
+
+x = pd.DatetimeIndex(clean_data.Release_Date)
+year = x.year
+decade = (year  // 10 ) * 10
+clean_data["Decade"] = decade
+clean_data
+
+"""### Separate the "old" (before 1969) and "New" (1970s onwards) Films
+
+**Challenge**: Create two new DataFrames: `old_films` and `new_films`
+* `old_films` should include all the films before 1969 (up to and including 1969)
+* `new_films` should include all the films from 1970 onwards
+* How many films were released prior to 1970?
+* What was the most expensive film made prior to 1970?
+"""
+
+old_films = clean_data[clean_data.Decade < 1970]
+old_films
+new_films = clean_data[clean_data.Decade >= 1970]
+old_films.describe()
+
+"""# Seaborn Regression Plots"""
+
+plt.figure(figsize=(8,4), dpi=100)
+with sns.axes_style("whitegrid"):
+  sns.regplot(data=old_films, 
+            x='USD_Production_Budget', 
+            y='USD_Worldwide_Gross',
+            scatter_kws = {'alpha': 0.4},
+            line_kws = {'color': 'black'})
+
+"""**Challenge**: Use Seaborn's `.regplot()` to show the scatter plot and linear regression line against the `new_films`. 
+<br>
+<br>
+Style the chart
+
+* Put the chart on a `'darkgrid'`.
+* Set limits on the axes so that they don't show negative values.
+* Label the axes on the plot "Revenue in \$ billions" and "Budget in \$ millions".
+* Provide HEX colour codes for the plot and the regression line. Make the dots dark blue (#2f4b7c) and the line orange (#ff7c43).
+
+Interpret the chart
+
+* Do our data points for the new films align better or worse with the linear regression than for our older films?
+* Roughly how much would a film with a budget of $150 million make according to the regression line?
+"""
+
+with sns.axes_style("whitegrid"):
+    ax = sns.regplot(data=new_films, 
+            x='USD_Production_Budget', 
+            y='USD_Worldwide_Gross',
+            scatter_kws = {'alpha': 0.4},
+            line_kws = {'color': '#ff7c43'},
+            color="#2f4b7c"
+            )
+    ax.set(ylim=(0, 3000000000),
+         xlim=(0, 450000000),
+         ylabel='Revenue in $ billions',
+         xlabel='Budget in $100 millions')
+
+"""# Run Your Own Regression with scikit-learn
+
+$$ REV \hat ENUE = \theta _0 + \theta _1 BUDGET$$
+"""
+
+from sklearn.linear_model import LinearRegression
+
+"""**Challenge**: Run a linear regression for the `old_films`. Calculate the intercept, slope and r-squared. How much of the variance in movie revenue does the linear model explain in this case?"""
+
+reg = LinearRegression()
+
+from seaborn import regression
+X = pd.DataFrame(new_films, columns=['USD_Production_Budget'])
+y = pd.DataFrame(new_films, columns=['USD_Worldwide_Gross']) 
+reg.fit(X, y)
+reg.intercept_
+reg.coef_
+reg.score(X, y)
+
+"""# Use Your Model to Make a Prediction
+
+We just estimated the slope and intercept! Remember that our Linear Model has the following form:
+
+$$ REV \hat ENUE = \theta _0 + \theta _1 BUDGET$$
+
+**Challenge**:  How much global revenue does our model estimate for a film with a budget of $350 million? 
+"""
+
+X = pd.DataFrame(old_films, columns=["USD_Production_Budget"])
+y = pd.DataFrame(old_films, columns=["USD_Worldwide_Gross"])
+reg.fit(X, y)
+reg.intercept_
+reg.coef_
+# reg.score(X, y)
+
+pred = 22821538.63508039 + (reg.coef_[0, 0]* 350000000)
+pred
+# 22821538 + 1.64771314 * 350000000
